@@ -71,6 +71,7 @@ app.get('/ZL-Animals', async function (req, res) {
 
         // Render the Animal.hbs file, and also send the renderer
         res.render('ZL-Animals', {animals: animals, zoos:zoos, species: species});
+
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -88,6 +89,7 @@ app.get('/ZL-Species', async function (req, res) {
         // Render the Animal.hbs file, and also send the renderer
         //  an object that contains our bsg_people and bsg_homeworld information
         res.render('ZL-Species', {species:species});
+
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -106,6 +108,7 @@ app.get('/ZL-Zoos', async function (req, res) {
         // Render the Zoos.hbs file, and also send the renderer
         //  an object that contains our bsg_people and bsg_homeworld information
         res.render('ZL-Zoos', {zoos: zoos});
+
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -219,6 +222,7 @@ app.get('/ZL-Roles', async function (req, res) {
         // Render the Roles.hbs file, and also send the renderer
         //  an object that contains our bsg_people and bsg_homeworld information
         res.render('ZL-Roles', {roles: roles});
+
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
