@@ -1,0 +1,57 @@
+<h1>Diets</h1>
+
+{{! READ table }}
+<table>
+    <thead>
+        {{! For the table header row, we print the DB attribute names }}
+        <tr>
+            {{#each diets.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{! For each row, print the id, fname, lname, homeworld and age }}
+        {{#each diets}}
+        <tr>
+            <td>{{this.Name}}</td>
+            <td>{{this.Details}}</td>
+            {{! Update form}}
+            <form id='update_diet_form'>
+                <td>
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            {{! DELETE form }}
+            <form id='delete_diet_form'>
+                <input type='hidden' name='delete_diet_id' value='{{this.id}}' />
+                <input type='hidden' name='delete_diet_name' value='{{this.Name}}' />
+                <input type='hidden' name='delete_diet_name' value='{{this.Details}}' />
+                <td>
+                    <button type='submit'>
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{! CREATE form }}
+<h2>Create a Diet</h2>
+<form class='cuForm' id='create_diet_form' method='POST' action='/ZL-Diets/create'>
+    <label for='create_name'>Names: </label>
+    <input type='text' name='create_name' id='create_name' required />
+
+    <label for='create_details'>Details: </label>
+    <input type='text' name='create_details' id='create_details' required />
+
+    <input type='submit' />
+</form>

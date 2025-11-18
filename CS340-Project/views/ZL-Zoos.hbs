@@ -1,0 +1,66 @@
+<h1>Zoos</h1>
+
+{{! READ table }}
+<table>
+    <thead>
+        {{! For the table header row, we print the DB attribute names }}
+        <tr>
+            {{#each zoos.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{! For each row, print the zoo name, city, state, and total animals}}
+        {{#each zoos}}
+        <tr>
+            <td>{{this.Name}}</td>
+            <td>{{this.Address}}</td>
+            <td>{{this.[Total Animals]}}</td>
+
+            {{! UPDATE form}}
+            <form id='update_zoo_form'>
+                <td>
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            </form>
+
+            {{! DELETE form }}
+            <form id='delete_zoo_form'>
+                <input type='hidden' name='delete_zoo_id' value='{{this.id}}' />
+                <input type='hidden' name='delete_name' value='{{this.Name}}' />
+                <td>
+                    <button type='submit'>
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{! CREATE form }}
+<h2>Add a Zoo</h2>
+<form class='cuForm' id='add_zoo_form' method='POST' action='/ZL-Zoos/create'>
+    <label for='add_name'>Name: </label>
+    <input type='text' name='add_name' id='add_name' required />
+
+    <label for='add_city'>City: </label>
+    <input type='text' name='add_city' id='add_city' />
+
+    <label for='add_state'>State: </label>
+    <input type='text' name='add_state' id='add_state' />
+
+    <label for='add_animal_total'>Total Animals:</label>
+    <input type='number' name='add_animal_total' id='add_animal_total' min='0' />
+
+    <input type='submit' />
+</form>

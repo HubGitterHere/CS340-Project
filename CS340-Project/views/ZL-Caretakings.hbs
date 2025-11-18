@@ -1,0 +1,76 @@
+<h1>Care Takings</h1>
+
+{{! READ table }}
+<table>
+    <thead>
+        {{! For the table header row, we print the DB attribute names }}
+        <tr>
+            {{#each caretakings.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{! For each row, print the id, fname, lname, homeworld and age }}
+        {{#each caretakings}}
+        <tr>
+            <td>{{this.Animal}}</td>
+            <td>{{this.Employee}}</td>
+            <td>{{this.[Feeding Time]}}</td>
+
+            {{! UPDATE form}}
+            <form id='update_caretaking_form'>
+                <td>
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            </form>
+            {{! DELETE form }}
+            <form id='delete_caretaking_form'>
+                <input type='hidden' name='delete_caretaking_id' value='{{this.animal_ID}}' />
+                <input type='hidden' name='delete_caretaking_name' value='{{this.fname}} {{this.lname}}' />
+                <td>
+                    <button type='submit'>
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{! CREATE form }}
+<h2>Create a Caretaking</h2>
+<form class='cuForm' id='create_caretaking_form' method='POST' action='/ZL-Caretakings/create'>
+
+    <label for='choose_animal'>Animal: </label>
+    <select name='choose_animal' id="choose_animal">
+        <option value='NULL' selected>Select an animal</option>
+        {{#each animals}}
+        <option value='{{this.animal_ID}}' required>{{this.animal_name}}</option>
+        {{/each}}
+    </select>
+
+    <label for='choose_employee'>Employee: </label>
+    <select name='choose_employee' id="choose_employee">
+        <option value='NULL' selected>Select an employee</option>
+        {{#each employees}}
+        <option value='{{this.employee_ID}}' required>{{this.first_name}} {{this.last_name}}</option>
+        {{/each}}
+    </select>
+
+    <label for='choose_feeding_time'>Feeding Time: </label>
+    <input type = 'time' name = 'choose_feeding_time' id='choose_feeding_time'>
+
+    </select>
+
+
+    <input type='submit' />
+</form>
