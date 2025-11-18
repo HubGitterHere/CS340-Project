@@ -5,29 +5,36 @@
     <thead>
         {{! For the table header row, we print the DB attribute names }}
         <tr>
-            {{#each people.[0]}}
+            {{#each employees.[0]}}
             <th>
                 {{@key}}
             </th>
             {{/each}}
-            <th></th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
     </thead>
 
     <tbody>
         {{! For each row, print the id, fname, lname, homeworld and age }}
-        {{#each people}}
+        {{#each employees}}
         <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.fname}}</td>
-            <td>{{this.lname}}</td>
-            <td>{{this.homeworld}}</td>
-            <td>{{this.age}}</td>
+            <td>{{this.Name}}</td>
+            <td>{{this.Zoo}}</td>
+            <td>{{this.Role}}</td>
 
+            {{! UPDATE form}}
+            <form id='update_employee_form'>
+                <td>
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            </form>
             {{! DELETE form }}
-            <form id='delete_person_form'>
-                <input type='hidden' name='delete_person_id' value='{{this.id}}' />
-                <input type='hidden' name='delete_person_name' value='{{this.fname}} {{this.lname}}' />
+            <form id='delete_employee_form'>
+                <input type='hidden' name='delete_employee_id' value='{{this.employee_ID}}' />
+                <input type='hidden' name='delete_employee_name' value='{{this.Name}}' />
                 <td>
                     <button type='submit'>
                         Delete
@@ -40,58 +47,29 @@
 </table>
 
 {{! CREATE form }}
-<h2>Create a Person</h2>
-<form class='cuForm' id='create_person_form'>
-    <label for='create_person_fname'>First Name: </label>
-    <input type='text' name='create_person_fname' id='create_person_fname' required />
+<h2>Create an Employee</h2>
+<form class='cuForm' id='create_employee_form' method='POST' action='/ZL-Employees/create'>
+    <label for='create_employee_fname'>First Name: </label>
+    <input type='text' name='create_employee_fname' id='create_employee_fname' required />
 
-    <label for='create_person_lname'>Last Name: </label>
-    <input type='text' name='create_person_lname' id='create_person_lname' />
+    <label for='create_employee_lname'>Last Name: </label>
+    <input type='text' name='create_employee_lname' id='create_employee_lname' />
 
-    <label for='create_person_homeworld'>Homeworld: </label>
-    <select name='create_person_homeworld' id='create_person_homeworld'>
-        <option value='NULL' selected>Select a Planet</option>
-        <option value='NULL'>&lt; None &gt;</option>
-        {{#each homeworlds}}
-        <option value='{{this.id}}' required>{{this.name}}</option>
+    <label for='create_employee_zoo'>Zoo Name: </label>
+    <select name='create_employee_zoo' id="create_employee_zoo">
+        <option value='NULL' selected>Select a Zoo</option>
+        {{#each zoos}}
+        <option value='{{this.zoo_ID}}' required>{{this.zoo_name}}</option>
         {{/each}}
     </select>
 
-    <label for='create_person_age'>Age:</label>
-    <input type='number' name='create_person_age' id='create_person_age' min='0' />
-
-    <input type='submit' />
-</form>
-
-{{! UPDATE form }}
-<h2>Update a Person</h2>
-<form class='cuForm' id='update_person_form'>
-    <label for='update_person_id'>Person to Update: </label>
-    <select name='update_person_id' id='update_person_id' required>
-        <option value='' disabled selected>Select a Person</option>
-        {{#each people}}
-        <option value='{{this.id}}' required>
-            {{this.id}}
-            -
-            {{this.fname}}
-            {{this.lname}}
-        </option>
+    <label for='create_employee_role'>Role Name: </label>
+    <select name='create_employee_role' id="create_employee_role">
+        <option value='NULL' selected>Select a Role</option>
+        {{#each roles}}
+        <option value='{{this.role_ID}}' required>{{this.role_title}}</option>
         {{/each}}
     </select>
-
-    <label for='update_person_homeworld'>Homeworld: </label>
-    <select name='update_person_homeworld' id='update_person_homeworld'>
-        <option value='NULL' disabled selected>Select a Planet</option>
-        <option value='NULL'>&lt; None &gt;</option>
-        {{#each homeworlds}}
-        <option value='{{this.id}}' required>
-            {{this.name}}
-        </option>
-        {{/each}}
-    </select>
-
-    <label for='update_person_age'>Age: </label>
-    <input type='number' name='update_person_age' id='update_person_age' min='0' />
 
     <input type='submit' />
 </form>

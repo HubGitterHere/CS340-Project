@@ -10,7 +10,8 @@
                 {{@key}}
             </th>
             {{/each}}
-            <th></th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
     </thead>
 
@@ -18,17 +19,24 @@
         {{! For each row, print the animal_ID, zoo_ID, species_ID, arrival_date, and animal_name }}
         {{#each animals}}
         <tr>
-            <td>{{this.animal_ID}}</td>
-            <td>{{this.zoo_ID}}</td>
-            <td>{{this.species_ID}}</td>
-            <td>{{this.arival_date}}</td>
-            <td>{{this.animal_name}}</td>
+            <td>{{this.Name}}</td>
+            <td>{{this.Species}}</td>
+            <td>{{this.Zoo}}</td>
+            <td>{{this.[Arrival Date]}}</td>
 
+            {{! Update form }}
+            <form id='update_animal_form'>
+                <td title = "Update">
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            </form>
             {{! DELETE form }}
             <form id='delete_animal_form'>
                 <input type='hidden' name='delete_animal_ID' value='{{this.animal_ID}}' />
-                <input type='hidden' name='delete_animal_name' value='{{this.animal_name}}' />
-                <td>
+                <input type='hidden' name='delete_name' value='{{this.name}}' />
+                <td title = "Delete">
                     <button type='submit'>
                         Delete
                     </button>
@@ -41,42 +49,22 @@
 
 {{! CREATE form }}
 <h2>Add an Animal</h2>
-<form class='cuForm' id='create_animal_form'>
-    <label for='create_animal_name'>Name: </label>
-    <input type='text' name='create_animal_name' id='create_animal_name' required />
+<form class='cuForm' id='create_animal_form' method='POST' action='/ZL-Animals/create'>
+    <label for='create_name'>Name: </label>
+    <input type='text' name='create_name' id='create_name' required />
 
-    <label for='create_animal_enclosure'>Enclosure: </label>
-    <select name='create_animal_enclosure' id='create_animal_enclosure'>
-        <option selected>Select an enclosure</option>
-        <option>&lt; None &gt;</option>
-        {{#each enclosures}}
-        <option value='{{this.animal_ID}}' required>{{this.animal_name}}</option>
-        {{/each}}
-    </select>
-
-    <label for='create_animal_age'>Arrival Date:</label>
-    <input type='number' name='create_animal_age' id='create_animal_age' min='0' />
-
-    <input type='submit' />
-</form>
-
-{{! UPDATE form }}
-<h2>Update an Animal</h2>
-<form class='cuForm' id='update_animal_form'>
-    <label for='update_animal_id'>Animal to Update: </label>
-    <select name='update_animal_id' id='update_animal_id' required>
-        <option value='' disabled selected>Select a animal</option>
-        {{#each animal}}
-        <option value='{{this.animal_ID}}' required>
-            {{this.animal_ID}}
-            -
-            {{this.animal_name}}
+    <label for="choose_species" >Species: </label>
+    <select name="choose_species" id="choose_species">
+        <option selected>Select a species</option>
+        {{#each species}}
+        <option value="{{this.species_ID}}" required>
+            {{this.common_name}}
         </option>
         {{/each}}
     </select>
 
-    <label for='update_animal_zoo'>Zoos: </label>
-    <select name = 'update_animal_zoo' id='update_animal_zoo'>
+    <label for="choose_animal_zoo">Zoo: </label>
+    <select name="choose_animal_zoo" id="choose_animal_zoo">
         <option value = 1>Select a Zoo</option>
         {{#each zoos}}
         <option value='{{this.zoo_ID}}' required>
@@ -85,18 +73,13 @@
         {{/each}}
     </select>
 
-    <label for='update_animal_enclosure'>Enclosure: </label>
-    <select name='update_animal_enclosure' id='update_animal_enclosure'>
-        <option value='NULL' disabled selected>Select an Enclosure</option>
-        {{#each enclosures}}
-        <option value='{{this.animal_ID}}' required>
-            {{this.animal_name}}
-        </option>
-        {{/each}}
-    </select>
+    <label for='create_animal_age'>Arrival Date:</label>
+    <input type='date' name='create_animal_arrival_date' id='create_animal_arrival_date' min='0' />
 
-    <label for='update_animal_age'>Arrival Date: </label>
-    <input type='date' name='update_animal_age' id='update_animal_age' min='0' />
-
-    <input type='submit' />
+    <input type='submit' value = "Create"/>
+</form>
+{{! RESET form}}
+<h2>Reset Animals</h2>
+<form id = 'reset_animal_form'>
+    <input type='button'>
 </form>

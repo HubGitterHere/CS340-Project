@@ -31,7 +31,185 @@ app.get('/', async function (req, res) {
         res.status(500).send('An error occurred while rendering the page.');
     }
 });
+app.get('/ZL-Animals', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = `SELECT animal_name AS Name, Species.common_name AS Species, 
+            Zoos.zoo_name AS Zoo, arrival_date AS "Arrival Date" FROM Animals
+            INNER JOIN Species ON Animals.species_ID = Species.species_ID
+            INNER JOIN Zoos ON Animals.zoo_ID = Zoos.zoo_ID;`;
+        const query2 = 'SELECT * FROM Zoos;';
+        const query3 = 'SELECT * FROM Species;';
+        const [animals] = await db.query(query1);
+        const [zoos] = await db.query(query2);
+        const [species] = await db.query(query3);
 
+        // Render the Animal.hbs file, and also send the renderer
+        res.render('ZL-Animals', {animals: animals, zoos:zoos, species: species});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Species', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = `SELECT common_name AS "Common Name",
+         scientific_name AS "Scientific Name",
+          Diets.diet_name AS Diet, Enclosures.enclosure_type AS Enclosure
+         FROM Species
+        INNER JOIN Diets ON Species.diet_ID = Diets.diet_ID
+        INNER JOIN Enclosures ON Species.enclosure_ID = Enclosures.enclosure_ID;`;
+        const query2 = "SELECT * FROM Diets;";
+        const query3 = "SELECT * FROM Enclosures;";
+        const [species] = await db.query(query1);
+        const [diets] = await db.query(query2);
+        const [enclosures] = await db.query(query3);
+        // Render the Animal.hbs file, and also send the renderer
+        //  an object that contains our bsg_people and bsg_homeworld information
+        res.render('ZL-Species', {species:species, diets:diets, enclosures:enclosures});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Zoos', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = `SELECT zoo_name AS Name,
+         CONCAT(city, ', ', state) AS Address,
+         total_animals AS "Total Animals" FROM Zoos;`;
+        const [zoos] = await db.query(query1);
+        
+        // Render the Zoos.hbs file, and also send the renderer
+        //  an object that contains our bsg_people and bsg_homeworld information
+        res.render('ZL-Zoos', {zoos: zoos});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Employees', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = `SELECT CONCAT(Employees.first_name, ' ', Employees.last_name) AS Name,
+            Zoos.zoo_name AS Zoo, Roles.role_title AS Role FROM Employees
+            INNER JOIN Zoos ON Employees.zoo_ID = Zoos.zoo_ID
+            INNER JOIN Roles ON Employees.role_ID = Roles.role_ID;`;
+        const query2 = `SELECT * FROM Zoos;`;
+        const query3 = `SELECT * FROM Roles;`;
+        const [employees] = await db.query(query1);
+        const [zoos] = await db.query(query2);
+        const [roles] = await db.query(query3);
+        // Render the Employees.hbs file, and also send the renderer
+        //  an object that contains our employee information
+        res.render('ZL-Employees', {employees: employees, zoos:zoos, roles:roles});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Caretakings', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = `SELECT Animals.animal_name AS Animal, 
+            CONCAT(Employees.first_name, ' ', Employees.last_name) AS Employee,
+            Caretakings.feeding_time AS "Feeding Time" FROM Caretakings
+            INNER JOIN Animals ON Caretakings.animal_ID = Animals.animal_ID
+            INNER JOIN Employees ON Caretakings.employee_ID = Employees.employee_ID;`;
+        const query2 = "SELECT * FROM Animals;";
+        const query3 = "SELECT * FROM Employees;";
+        const [caretakings] = await db.query(query1);
+        const [animals] = await db.query(query2);
+        const [employees] = await db.query(query3);
+
+        // Render the Caretakings.hbs file, and also send the renderer
+        //  an object that contains our bsg_people and bsg_homeworld information
+        res.render('ZL-Caretakings', {caretakings:caretakings,
+            animals:animals, employees:employees
+        });
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Diets', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = "SELECT diet_name AS Name, diet_details AS Details FROM Diets;"
+        const [diets] = await db.query(query1);
+        
+        // Render the Diets.hbs file, and also send the renderer
+        //  an object that contains our diets information
+        res.render('ZL-Diets', {diets: diets});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Enclosures', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = "SELECT enclosure_type AS Enclosure FROM Enclosures;";
+        const [enclosures] = await db.query(query1);
+
+        // Render the Enclosures.hbs file, and also send the renderer
+        //  an object that contains our bsg_people and bsg_homeworld information
+        res.render('ZL-Enclosures', {enclosures: enclosures});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+
+app.get('/ZL-Roles', async function (req, res) {
+    try {
+        // Create and execute our queries
+        const query1 = "SELECT role_title AS Role FROM Roles;";
+        const [roles] = await db.query(query1);
+
+        // Render the Roles.hbs file, and also send the renderer
+        //  an object that contains our bsg_people and bsg_homeworld information
+        res.render('ZL-Roles', {roles: roles});
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+//BSG example code
+//copied from Exploration - Web Application Technology
+//Date 11/18/2025
+//url: https://canvas.oregonstate.edu/courses/2017561/pages/exploration-web-application-technology-2
 app.get('/bsg-people', async function (req, res) {
     try {
         // Create and execute our queries
@@ -55,23 +233,277 @@ app.get('/bsg-people', async function (req, res) {
     }
 });
 
-
-app.get('/ZL-Animals', async function (req, res) {
+// CREATE ROUTES
+app.post('/ZL-Animals/create', async function (req, res) {
     try {
+        // Parse frontend form information
+        let data = req.body;
+
         // Create and execute our queries
-        const query1 = `SELECT animal_name, Species.common_name AS species, 
-            Zoos.zoo_name AS zoo, arrival_date FROM Animals
-            INNER JOIN Species ON Animals.species_ID = Species.species_ID
-            INNER JOIN Zoos ON Animals.zoo_ID = Zoos.zoo_ID;`;
-        const query2 = 'SELECT * FROM Zoos;';
-        const query3 = 'SELECT * FROM Species;';
-        const [animals] = await db.query(query1);
-        const [zoos] = await db.query(query2);
-        const [species] = await db.query(query3);
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateAnimal(?, ?, ?, ?, @new_id);`;
 
-        // Render the Animal.hbs file, and also send the renderer
-        res.render('ZL-Animals', {animals: animals, zoos:zoos, species: species});
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_name,
+            data.choose_species,
+            data.choose_animal_zoo,
+            data.create_animal_arrival_date,
+        ]);
 
+        console.log(`CREATE ZL-Animals. ID: ${rows.new_id} ` +
+            `Name: ${data.create_animal_name}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Animals');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Caretakings/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateCaretaking(?, ?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.choose_animal,
+            data.choose_employee,
+            data.choose_feed_time,
+        ]);
+
+        console.log(`CREATE ZL-Caretakings. ID: ${rows.new_id} `);
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Caretakings');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Diets/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateDiet(?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_name,
+            data.create_details
+        ]);
+
+        console.log(`CREATE ZL-Diets. ID: ${rows.new_id} ` +
+            `Name: ${data.create_animal_name}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Diets');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Employees/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateEmployee(?, ?, ?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_employee_fname,
+            data.create_employee_lname,
+            data.create_employee_zoo,
+            data.create_employee_role,
+        ]);
+
+        console.log(`CREATE ZL-Employees. ID: ${rows.new_id} ` +
+            `Name: ${data.create_employee_fname} + ${data.create_employee_lname}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Employees');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Enclosures/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateEnclosure(?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_enclosure_type,
+        ]);
+
+        console.log(`CREATE ZL-Enclosures. ID: ${rows.new_id} ` +
+            `Name: ${data.create_enclosure_type}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Enclosures');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Roles/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateRole(?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_role_title,
+        ]);
+
+        console.log(`CREATE ZL-Roles. ID: ${rows.new_id} ` +
+            `Name: ${data.create_role_title}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Roles');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Species/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateSpecies(?, ?, ?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_species_common_name,
+            data.create_species_scientific_name,
+            data.choose_diet,
+            data.choose_enclosure,
+        ]);
+
+        console.log(`CREATE ZL-Species. ID: ${rows.new_id} ` +
+            `Name: ${data.create_species_common_name}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Species');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+app.post('/ZL-Zoos/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreateZoo(?, ?, ?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.add_name,
+            data.add_city,
+            data.add_state,
+            data.add_animal_total,
+        ]);
+
+        console.log(`CREATE ZL-Zoos. ID: ${rows.new_id} ` +
+            `Name: ${data.add_name}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/ZL-Zoos');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+// BSG example code
+//Copied from Exploration-Implementing CUD operations in your app
+//Date 11/18/2025
+//URL: https://canvas.oregonstate.edu/courses/2017561/pages/exploration-implementing-cud-operations-in-your-app?module_item_id=25645149
+app.post('/bsg-people/create', async function (req, res) {
+    try {
+        // Parse frontend form information
+        let data = req.body;
+
+        // Cleanse data - If the homeworld or age aren't numbers, make them NULL.
+        if (isNaN(parseInt(data.create_person_homeworld)))
+            data.create_person_homeworld = null;
+        if (isNaN(parseInt(data.create_person_age)))
+            data.create_person_age = null;
+
+        // Create and execute our queries
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_CreatePerson(?, ?, ?, ?, @new_id);`;
+
+        // Store ID of last inserted row
+        const [[[rows]]] = await db.query(query1, [
+            data.create_person_fname,
+            data.create_person_lname,
+            data.create_person_homeworld,
+            data.create_person_age,
+        ]);
+
+        console.log(`CREATE bsg-people. ID: ${rows.new_id} ` +
+            `Name: ${data.create_person_fname} ${data.create_person_lname}`
+        );
+
+        // Redirect the user to the updated webpage
+        res.redirect('/bsg-people');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -81,15 +513,75 @@ app.get('/ZL-Animals', async function (req, res) {
     }
 });
 
-app.get('/ZL-Species', async function (req, res) {
+//UPDATE ROUTES
+app.post('/bsg-people/update', async function (req, res) {
     try {
-        // Create and execute our queries
-        const query1 = "SELECT common_name, scientific_name FROM Species;";
-        const [species] = await db.query(query1);
-        // Render the Animal.hbs file, and also send the renderer
-        //  an object that contains our bsg_people and bsg_homeworld information
-        res.render('ZL-Species', {species:species});
+        // Parse frontend form information
+        const data = req.body;
 
+        // Cleanse data - If the homeworld or age aren't numbers, make them NULL.
+        if (isNaN(parseInt(data.update_person_homeworld)))
+            data.update_person_homeworld = null;
+        if (isNaN(parseInt(data.update_person_age)))
+            data.update_person_age = null;
+
+        // Create and execute our query
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = 'CALL sp_UpdatePerson(?, ?, ?);';
+        const query2 = 'SELECT fname, lname FROM bsg_people WHERE id = ?;';
+        await db.query(query1, [
+            data.update_person_id,
+            data.update_person_homeworld,
+            data.update_person_age,
+        ]);
+        const [[rows]] = await db.query(query2, [data.update_person_id]);
+
+        console.log(`UPDATE bsg-people. ID: ${data.update_person_id} ` +
+            `Name: ${rows.fname} ${rows.lname}`
+        );
+
+        // Redirect the user to the updated webpage data
+        res.redirect('/bsg-people');
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        // Send a generic error message to the browser
+        res.status(500).send(
+            'An error occurred while executing the database queries.'
+        );
+    }
+});
+// BSG example code
+//Copied from Exploration-Implementing CUD operations in your app
+//Date 11/18/2025
+//URL: https://canvas.oregonstate.edu/courses/2017561/pages/exploration-implementing-cud-operations-in-your-app?module_item_id=25645149
+app.post('/bsg-people/update', async function (req, res) {
+    try {
+        // Parse frontend form information
+        const data = req.body;
+
+        // Cleanse data - If the homeworld or age aren't numbers, make them NULL.
+        if (isNaN(parseInt(data.update_person_homeworld)))
+            data.update_person_homeworld = null;
+        if (isNaN(parseInt(data.update_person_age)))
+            data.update_person_age = null;
+
+        // Create and execute our query
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = 'CALL sp_UpdatePerson(?, ?, ?);';
+        const query2 = 'SELECT fname, lname FROM bsg_people WHERE id = ?;';
+        await db.query(query1, [
+            data.update_person_id,
+            data.update_person_homeworld,
+            data.update_person_age,
+        ]);
+        const [[rows]] = await db.query(query2, [data.update_person_id]);
+
+        console.log(`UPDATE bsg-people. ID: ${data.update_person_id} ` +
+            `Name: ${rows.fname} ${rows.lname}`
+        );
+
+        // Redirect the user to the updated webpage data
+        res.redirect('/bsg-people');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -99,16 +591,23 @@ app.get('/ZL-Species', async function (req, res) {
     }
 });
 
-app.get('/ZL-Zoos', async function (req, res) {
+//DELETE ROUTES
+app.post('/bsg-people/delete', async function (req, res) {
     try {
-        // Create and execute our queries
-        const query1 = "SELECT zoo_name, city, state, total_animals FROM Zoos;";
-        const [zoos] = await db.query(query1);
-        
-        // Render the Zoos.hbs file, and also send the renderer
-        //  an object that contains our bsg_people and bsg_homeworld information
-        res.render('ZL-Zoos', {zoos: zoos});
+        // Parse frontend form information
+        let data = req.body;
 
+        // Create and execute our query
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_DeletePerson(?);`;
+        await db.query(query1, [data.delete_person_id]);
+
+        console.log(`DELETE bsg-people. ID: ${data.delete_person_id} ` +
+            `Name: ${data.delete_person_name}`
+        );
+
+        // Redirect the user to the updated webpage data
+        res.redirect('/bsg-people');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -117,112 +616,27 @@ app.get('/ZL-Zoos', async function (req, res) {
         );
     }
 });
-
-app.get('/ZL-Employees', async function (req, res) {
+// BSG example code
+//Copied from Exploration-Implementing CUD operations in your app
+//Date 11/18/2025
+//URL: https://canvas.oregonstate.edu/courses/2017561/pages/exploration-implementing-cud-operations-in-your-app?module_item_id=25645149
+// DELETE ROUTES
+app.post('/bsg-people/delete', async function (req, res) {
     try {
-        // Create and execute our queries
-        const query1 = `SELECT Employees.first_name, Employees.last_name,
-            Zoos.zoo_name, Roles.role_title FROM Employees
-            INNER JOIN Zoos ON Employees.zoo_ID = Zoos.zoo_ID
-            INNER JOIN Roles ON Employees.role_ID = Roles.role_ID;`;
-        const query2 = `SELECT * FROM Zoos;`;
-        const query3 = `SELECT * FROM Roles;`;
-        const [employees] = await db.query(query1);
-        const [zoos] = await db.query(query2);
-        const [roles] = await db.query(query3);
-        // Render the Employees.hbs file, and also send the renderer
-        //  an object that contains our employee information
-        res.render('ZL-Employees', {employees: employees, zoos:zoos, roles:roles});
-    } catch (error) {
-        console.error('Error executing queries:', error);
-        // Send a generic error message to the browser
-        res.status(500).send(
-            'An error occurred while executing the database queries.'
+        // Parse frontend form information
+        let data = req.body;
+
+        // Create and execute our query
+        // Using parameterized queries (Prevents SQL injection attacks)
+        const query1 = `CALL sp_DeletePerson(?);`;
+        await db.query(query1, [data.delete_person_id]);
+
+        console.log(`DELETE bsg-people. ID: ${data.delete_person_id} ` +
+            `Name: ${data.delete_person_name}`
         );
-    }
-});
 
-app.get('/ZL-Caretakings', async function (req, res) {
-    try {
-        // Create and execute our queries
-        const query1 = `SELECT Animals.animal_name AS animal, 
-            Employees.first_name, Employees.last_name,
-            Diets.diet_details AS diet, Caretakings.feeding_time,
-            Enclosures.enclosure_type FROM Caretakings
-            INNER JOIN Animals ON Caretakings.animal_ID = Animals.animal_ID
-            INNER JOIN Employees ON Caretakings.employee_ID = Employees.employee_ID
-            INNER JOIN Diets ON Caretakings.diet_ID = Diets.diet_ID
-            INNER JOIN Enclosures ON Caretakings.enclosure_ID = Enclosures.enclosure_ID;`;
-        const query2 = "SELECT * FROM Animals;";
-        const query3 = "SELECT * FROM Employees;";
-        const query4 = "SELECT * FROM Diets;";
-        const query5 = "SELECT * FROM Enclosures;";
-        const [caretakings] = await db.query(query1);
-        const [animals] = await db.query(query2);
-        const [employees] = await db.query(query3);
-        const [diets] = await db.query(query4);
-        const [enclosures] = await db.query(query5);
-
-        // Render the Caretakings.hbs file, and also send the renderer
-        //  an object that contains our bsg_people and bsg_homeworld information
-        res.render('ZL-Caretakings', {caretakings:caretakings, animals:animals, 
-            employees:employees, diets:diets, enclosures:enclosures
-        });
-    } catch (error) {
-        console.error('Error executing queries:', error);
-        // Send a generic error message to the browser
-        res.status(500).send(
-            'An error occurred while executing the database queries.'
-        );
-    }
-});
-
-app.get('/ZL-Diets', async function (req, res) {
-    try {
-        // Create and execute our queries
-        const query1 = "SELECT diet_details FROM Diets;"
-        const [diets] = await db.query(query1);
-        
-        // Render the Diets.hbs file, and also send the renderer
-        //  an object that contains our diets information
-        res.render('ZL-Diets', {diets: diets});
-    } catch (error) {
-        console.error('Error executing queries:', error);
-        // Send a generic error message to the browser
-        res.status(500).send(
-            'An error occurred while executing the database queries.'
-        );
-    }
-});
-
-app.get('/ZL-Enclosures', async function (req, res) {
-    try {
-        // Create and execute our queries
-        const query1 = "SELECT enclosure_type FROM Enclosures;";
-        const [enclosures] = await db.query(query1);
-
-        // Render the Enclosures.hbs file, and also send the renderer
-        //  an object that contains our bsg_people and bsg_homeworld information
-        res.render('ZL-Enclosures', {enclosures: enclosures});
-    } catch (error) {
-        console.error('Error executing queries:', error);
-        // Send a generic error message to the browser
-        res.status(500).send(
-            'An error occurred while executing the database queries.'
-        );
-    }
-});
-
-app.get('/ZL-Roles', async function (req, res) {
-    try {
-        // Create and execute our queries
-        const query1 = "SELECT role_title FROM Roles;";
-        const [roles] = await db.query(query1);
-
-        // Render the Roles.hbs file, and also send the renderer
-        //  an object that contains our bsg_people and bsg_homeworld information
-        res.render('ZL-Roles', {roles: roles});
-
+        // Redirect the user to the updated webpage data
+        res.redirect('/bsg-people');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser

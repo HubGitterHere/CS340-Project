@@ -5,29 +5,37 @@
     <thead>
         {{! For the table header row, we print the DB attribute names }}
         <tr>
-            {{#each people.[0]}}
+            {{#each zoos.[0]}}
             <th>
                 {{@key}}
             </th>
             {{/each}}
-            <th></th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
     </thead>
 
     <tbody>
-        {{! For each row, print the id, fname, lname, homeworld and age }}
-        {{#each people}}
+        {{! For each row, print the zoo name, city, state, and total animals}}
+        {{#each zoos}}
         <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.fname}}</td>
-            <td>{{this.lname}}</td>
-            <td>{{this.homeworld}}</td>
-            <td>{{this.age}}</td>
+            <td>{{this.Name}}</td>
+            <td>{{this.Address}}</td>
+            <td>{{this.[Total Animals]}}</td>
+
+            {{! UPDATE form}}
+            <form id='update_zoo_form'>
+                <td>
+                    <button type='submit'>
+                        Update
+                    </button>
+                </td>
+            </form>
 
             {{! DELETE form }}
-            <form id='delete_person_form'>
-                <input type='hidden' name='delete_person_id' value='{{this.id}}' />
-                <input type='hidden' name='delete_person_name' value='{{this.fname}} {{this.lname}}' />
+            <form id='delete_zoo_form'>
+                <input type='hidden' name='delete_zoo_id' value='{{this.id}}' />
+                <input type='hidden' name='delete_name' value='{{this.Name}}' />
                 <td>
                     <button type='submit'>
                         Delete
@@ -40,58 +48,19 @@
 </table>
 
 {{! CREATE form }}
-<h2>Create a Person</h2>
-<form class='cuForm' id='create_person_form'>
-    <label for='create_person_fname'>First Name: </label>
-    <input type='text' name='create_person_fname' id='create_person_fname' required />
+<h2>Add a Zoo</h2>
+<form class='cuForm' id='add_zoo_form' method='POST' action='/ZL-Zoos/create'>
+    <label for='add_name'>Name: </label>
+    <input type='text' name='add_name' id='add_name' required />
 
-    <label for='create_person_lname'>Last Name: </label>
-    <input type='text' name='create_person_lname' id='create_person_lname' />
+    <label for='add_city'>City: </label>
+    <input type='text' name='add_city' id='add_city' />
 
-    <label for='create_person_homeworld'>Homeworld: </label>
-    <select name='create_person_homeworld' id='create_person_homeworld'>
-        <option value='NULL' selected>Select a Planet</option>
-        <option value='NULL'>&lt; None &gt;</option>
-        {{#each homeworlds}}
-        <option value='{{this.id}}' required>{{this.name}}</option>
-        {{/each}}
-    </select>
+    <label for='add_state'>State: </label>
+    <input type='text' name='add_state' id='add_state' />
 
-    <label for='create_person_age'>Age:</label>
-    <input type='number' name='create_person_age' id='create_person_age' min='0' />
-
-    <input type='submit' />
-</form>
-
-{{! UPDATE form }}
-<h2>Update a Person</h2>
-<form class='cuForm' id='update_person_form'>
-    <label for='update_person_id'>Person to Update: </label>
-    <select name='update_person_id' id='update_person_id' required>
-        <option value='' disabled selected>Select a Person</option>
-        {{#each people}}
-        <option value='{{this.id}}' required>
-            {{this.id}}
-            -
-            {{this.fname}}
-            {{this.lname}}
-        </option>
-        {{/each}}
-    </select>
-
-    <label for='update_person_homeworld'>Homeworld: </label>
-    <select name='update_person_homeworld' id='update_person_homeworld'>
-        <option value='NULL' disabled selected>Select a Planet</option>
-        <option value='NULL'>&lt; None &gt;</option>
-        {{#each homeworlds}}
-        <option value='{{this.id}}' required>
-            {{this.name}}
-        </option>
-        {{/each}}
-    </select>
-
-    <label for='update_person_age'>Age: </label>
-    <input type='number' name='update_person_age' id='update_person_age' min='0' />
+    <label for='add_animal_total'>Total Animals:</label>
+    <input type='number' name='add_animal_total' id='add_animal_total' min='0' />
 
     <input type='submit' />
 </form>
