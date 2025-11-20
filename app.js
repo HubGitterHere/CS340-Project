@@ -1,6 +1,7 @@
 // ########################################
 // ########## SETUP
 
+
 // Express
 const express = require('express');
 const app = express();
@@ -23,6 +24,7 @@ app.set('view engine', '.hbs'); // Use handlebars engine for *.hbs files.
 
 // READ ROUTES
 app.get('/', async function (req, res) {
+    console.log("🔥 '/' route hit!");
     try {
         res.render('home'); // Render the home.hbs file
     } catch (error) {
