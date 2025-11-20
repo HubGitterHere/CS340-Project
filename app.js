@@ -516,34 +516,29 @@ app.post('/bsg-people/create', async function (req, res) {
 });
 
 //UPDATE ROUTES
-app.post('/bsg-people/update', async function (req, res) {
+app.post('/ZL-Animals/update', async function (req, res) {
     try {
         // Parse frontend form information
         const data = req.body;
 
-        // Cleanse data - If the homeworld or age aren't numbers, make them NULL.
-        if (isNaN(parseInt(data.update_person_homeworld)))
-            data.update_person_homeworld = null;
-        if (isNaN(parseInt(data.update_person_age)))
-            data.update_person_age = null;
-
         // Create and execute our query
         // Using parameterized queries (Prevents SQL injection attacks)
-        const query1 = 'CALL sp_UpdatePerson(?, ?, ?);';
+        const query1 = 'CALL sp_UpdateAnimal(?, ?, ?, ?);';
         const query2 = 'SELECT fname, lname FROM bsg_people WHERE id = ?;';
         await db.query(query1, [
-            data.update_person_id,
-            data.update_person_homeworld,
-            data.update_person_age,
+            data.update_animal_id,
+            data.update_animal_species,
+            data.update_animal_zoo,
+            data.update_animal_arrival_date,
         ]);
-        const [[rows]] = await db.query(query2, [data.update_person_id]);
+        const [[rows]] = await db.query(query2, [data.update_animal_id]);
 
-        console.log(`UPDATE bsg-people. ID: ${data.update_person_id} ` +
-            `Name: ${rows.fname} ${rows.lname}`
+        console.log(`UPDATE Zl-Animal. ID: ${data.update_animal_id} ` +
+            `Name: ${rows.Name} ${rows.lname}`
         );
 
         // Redirect the user to the updated webpage data
-        res.redirect('/bsg-people');
+        res.redirect('/ZL-Animals');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
@@ -594,22 +589,22 @@ app.post('/bsg-people/update', async function (req, res) {
 });
 
 //DELETE ROUTES
-app.post('/bsg-people/delete', async function (req, res) {
+app.post('/ZL-Animals/delete', async function (req, res) {
     try {
         // Parse frontend form information
         let data = req.body;
 
         // Create and execute our query
         // Using parameterized queries (Prevents SQL injection attacks)
-        const query1 = `CALL sp_DeletePerson(?);`;
-        await db.query(query1, [data.delete_person_id]);
+        const query1 = `CALL sp_DeleteAnimal(?);`;
+        await db.query(query1, [data.delete_animal_id]);
 
-        console.log(`DELETE bsg-people. ID: ${data.delete_person_id} ` +
-            `Name: ${data.delete_person_name}`
+        console.log(`DELETE ZL-Animal. ID: ${data.delete_animal_id} ` +
+            `Name: ${data.delete_animal_name}`
         );
 
         // Redirect the user to the updated webpage data
-        res.redirect('/bsg-people');
+        res.redirect('/ZL-Animals');
     } catch (error) {
         console.error('Error executing queries:', error);
         // Send a generic error message to the browser
