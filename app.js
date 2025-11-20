@@ -22,6 +22,7 @@ app.set('view engine', '.hbs'); // Use handlebars engine for *.hbs files.
 // ########################################
 // ########## ROUTE HANDLERS
 
+
 // READ ROUTES
 app.get('/', async function (req, res) {
     console.log("🔥 '/' route hit!");
@@ -642,6 +643,21 @@ app.post('/bsg-people/delete', async function (req, res) {
         );
     }
 });
+
+// RESET ROUTES
+app.get('/reset', async (req, res) => {
+    try {
+        await db.query('CALL sp_load_zoolinkpnw();');
+        console.log('Database has been reset.');
+        res.redirect('/');
+    } catch (error) {
+        console.error('Error resetting database:', error);
+        res.status(500).send('Error resetting database');
+    }
+});
+
+
+
 // ########################################
 // ########## LISTENER
 
