@@ -644,7 +644,7 @@ app.post('/bsg-people/delete', async function (req, res) {
     }
 });
 
-// RESET ROUTES
+// RESET ROUTE
 app.get('/reset', async (req, res) => {
     try {
         await db.query('CALL sp_load_zoolinkpnw();');
@@ -652,10 +652,9 @@ app.get('/reset', async (req, res) => {
         res.redirect('/');
     } catch (error) {
         console.error('Error resetting database:', error);
-        res.status(500).send('Error resetting database');
+        res.status(500).send(`Error resetting database: ${error.message}`);
     }
 });
-
 
 
 // ########################################
